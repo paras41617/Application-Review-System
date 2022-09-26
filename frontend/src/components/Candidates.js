@@ -98,6 +98,7 @@ class Candidate extends React.Component {
             }
         }).then(response => response.json())
             .then(data => console.log(data));
+        window.location.reload();
     }
 
     download_resume() {
@@ -197,7 +198,7 @@ class Candidate extends React.Component {
                     </div>
                     <div style={{marginLeft:"7%" , marginBottom:"2%"}}>
                         <button onClick={this.togglePopup} className='button-27'>Close</button>
-                        <a href={`http://localhost:8000/media/${this.state.candidate.resume}`} target='_blank' rel='noopener noreferrer'><button className='button-27'>Resume</button></a>
+                        {this.state.candidate.resume !="null"?<a href={`http://localhost:8000/media/${this.state.candidate.resume}`} target='_blank' rel='noopener noreferrer'><button className='button-27'>Resume</button></a>:null}
                         {this.state.candidate.status == "applied" || this.state.candidate.status == "accept" ? <button onClick={() => this.change_status('reject')} className='button-27'>Reject</button> : null}
                         {this.state.candidate.status == "applied" || this.state.candidate.status == "reject" ? <button onClick={() => this.change_status('accept')} className='button-27'>Accept</button> : null}
                     </div>

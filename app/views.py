@@ -72,7 +72,6 @@ def show_candidates(request):
 @csrf_exempt
 @api_view(['POST'])
 def show_detail(request):
-    print(request.data['id'])
     candidate = Candidate.objects.filter(id = request.data['id'])
     exps = candidate[0].experiences.all().values()
     edus = candidate[0].educations.all().values()
@@ -84,10 +83,7 @@ def show_detail(request):
 def change_status(request):
     candidate = Candidate.objects.filter(id = request.POST['id'])
     status = request.data['status']
-    print(status)
     ans = candidate[0]
-    print(ans)
     ans.status = status
     ans.save()
-    print(ans.status)
     return Response("success")

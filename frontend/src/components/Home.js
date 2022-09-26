@@ -6,53 +6,70 @@ class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            first_name: '',
-            last_name: '',
-            email: '',
-            resume: "None",
-            pic: "None",
-            contact: "None",
+            first_name: null,
+            last_name: null,
+            email: null,
+            resume: null,
+            pic: null,
+            contact: null,
             id: '',
             created: false,
-            showPopup:false,
-            popup_type:''
+            showPopup: false,
+            popup_type: ''
         }
         this.onchange_file = this.onchange_file.bind(this);
         this.onchange_text = this.onchange_text.bind(this);
         this.add_candidate = this.add_candidate.bind(this);
         this.getCookie = this.getCookie.bind(this)
         this.togglePopup = this.togglePopup.bind(this);
+        this.isValidEmail = this.isValidEmail.bind(this);
     }
 
     togglePopup(type) {
         this.setState({
             showPopup: !this.state.showPopup,
-            popup_type:type
+            popup_type: type
         });
     };
 
+    isValidEmail() {
+        return /\S+@\S+\.\S+/.test(this.state.email);
+    }
+
     async add_candidate(e) {
         e.preventDefault();
-        var csrftoken = this.getCookie('csrftoken');
-        let formdata = new FormData();
-        formdata.append('first_name', this.state.first_name);
-        formdata.append('last_name', this.state.last_name);
-        formdata.append('email', this.state.email);
-        formdata.append('resume', this.state.resume);
-        formdata.append('pic', this.state.pic);
-        formdata.append('contact', this.state.contact);
-        await fetch('http://localhost:8000/create_candidate/', {
-            method: 'POST',
-            body: formdata,
-            headers: {
-                'X-CSRFToken': csrftoken,
+        if (this.state.first_name == null || this.state.last_name == null || this.state.email == null || this.state.pic == null || this.state.contact == null) {
+            alert("First Name , Last Name , Email , Pic , Contact are mandatory fields")
+        }
+        else {
+            let temp = this.isValidEmail()
+            console.log(temp)
+            if (!temp) {
+                alert("Email is not Valid")
             }
-        }).then(response => response.json())
-            .then(data => {
-                this.setState({ id: data['id'] })
-                localStorage.setItem('id', data['id'])
-            });
-        this.setState({ created: true });
+            else {
+                var csrftoken = this.getCookie('csrftoken');
+                let formdata = new FormData();
+                formdata.append('first_name', this.state.first_name);
+                formdata.append('last_name', this.state.last_name);
+                formdata.append('email', this.state.email);
+                formdata.append('resume', this.state.resume);
+                formdata.append('pic', this.state.pic);
+                formdata.append('contact', this.state.contact);
+                await fetch('http://localhost:8000/create_candidate/', {
+                    method: 'POST',
+                    body: formdata,
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                    }
+                }).then(response => response.json())
+                    .then(data => {
+                        this.setState({ id: data['id'] })
+                        localStorage.setItem('id', data['id'])
+                    });
+                this.setState({ created: true });
+            }
+        }
     }
 
     onchange_text(e) {
