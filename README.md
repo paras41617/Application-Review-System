@@ -7,9 +7,9 @@ This is an application review system that can be used by any firm for managing c
 ## Features
 
 - Django REST Framework
-- Add Candidate
-- Add Multiple Experiences , Educations and links
-- Download Resume
+- Add Multiple Candidates
+- Add Multiple Experiences , Educations and links to a single candiate
+- View Resume without downloading
 - Detail view of every candidate
 
 ## Tech Stack
@@ -21,6 +21,8 @@ This is an application review system that can be used by any firm for managing c
 
 ## Screenshots
 
-<img width="946" alt="first" src="https://user-images.githubusercontent.com/54182371/192163492-48fd9600-b2d9-4034-93b9-0f7ddba993a1.png">
-<img width="944" alt="second" src="https://user-images.githubusercontent.com/54182371/192163496-1abc37fc-0ddd-44e5-b270-9f9d4c656439.png">
-<img width="934" alt="third" src="https://user-images.githubusercontent.com/54182371/192163497-7e7222e0-2bb9-4a08-9857-020b14d79f98.png">
+<img width="960" alt="first" src="https://user-images.githubusercontent.com/54182371/192219729-3353e2cc-77fc-46e0-aa7a-5518d4eab29f.png">
+<img width="943" alt="second" src="https://user-images.githubusercontent.com/54182371/192219770-7ee84648-9552-434d-bb40-a39b75c5e3cb.png">
+<img width="944" alt="third" src="https://user-images.githubusercontent.com/54182371/192219798-50c155aa-49f5-409b-9634-6b0d077ac3f6.png">
+<img width="942" alt="fourth" src="https://user-images.githubusercontent.com/54182371/192219828-2a56b4c9-cfeb-4f9f-bdcd-6e96f5452c7f.png">
+<img width="931" alt="fifth" src="https://user-images.githubusercontent.com/54182371/192219853-e1aa54e9-2d79-45e7-822b-269cb90732aa.png">
