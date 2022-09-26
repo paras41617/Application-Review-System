@@ -1,5 +1,6 @@
 import React from 'react'
-import axios from 'axios';
+import '../styles/Home.css'
+import Popup from './Popup';
 
 class Home extends React.Component {
     constructor(props) {
@@ -12,25 +13,26 @@ class Home extends React.Component {
             pic: "None",
             contact: "None",
             id: '',
-            title: '',
-            start_year: '',
-            end_year: '',
-            institution: '',
-            grade: '',
-            type: '',
-            role: '',
-            url: ''
+            created: false,
+            showPopup:false,
+            popup_type:''
         }
         this.onchange_file = this.onchange_file.bind(this);
         this.onchange_text = this.onchange_text.bind(this);
         this.add_candidate = this.add_candidate.bind(this);
         this.getCookie = this.getCookie.bind(this)
-        this.add_education = this.add_education.bind(this)
-        this.add_experience = this.add_experience.bind(this)
-        this.add_link = this.add_link.bind(this)
+        this.togglePopup = this.togglePopup.bind(this);
     }
 
-    async add_candidate() {
+    togglePopup(type) {
+        this.setState({
+            showPopup: !this.state.showPopup,
+            popup_type:type
+        });
+    };
+
+    async add_candidate(e) {
+        e.preventDefault();
         var csrftoken = this.getCookie('csrftoken');
         let formdata = new FormData();
         formdata.append('first_name', this.state.first_name);
@@ -39,7 +41,6 @@ class Home extends React.Component {
         formdata.append('resume', this.state.resume);
         formdata.append('pic', this.state.pic);
         formdata.append('contact', this.state.contact);
-        // const item = { 'first_name': this.state.first_name, 'last_name': this.state.last_name, 'email': this.state.email, 'contact': this.state.contact, 'resume': this.state.resume, 'pic': this.state.pic }
         console.log(formdata)
         await fetch('http://localhost:8000/create_candidate/', {
             method: 'POST',
@@ -51,65 +52,9 @@ class Home extends React.Component {
             .then(data => {
                 console.log(data['id'])
                 this.setState({ id: data['id'] })
-                localStorage.setItem('id' , data['id'])
+                localStorage.setItem('id', data['id'])
             });
-    }
-
-    async add_education() {
-        var csrftoken = this.getCookie('csrftoken');
-        let formdata = new FormData();
-        formdata.append('title', this.state.title);
-        formdata.append('end_year', this.state.end_year);
-        formdata.append('start_year', this.state.start_year);
-        formdata.append('institution', this.state.institution);
-        formdata.append('grade', this.state.grade);
-        formdata.append('id', localStorage.getItem('id'));
-        console.log(formdata)
-        await fetch('http://localhost:8000/create_education/', {
-            method: 'POST',
-            body: formdata,
-            headers: {
-                'X-CSRFToken': csrftoken,
-            }
-        }).then(response => response.json())
-            .then(data => console.log(data));
-    }
-
-    async add_experience() {
-        var csrftoken = this.getCookie('csrftoken');
-        let formdata = new FormData();
-        formdata.append('role', this.state.role);
-        formdata.append('end_year', this.state.end_year);
-        formdata.append('start_year', this.state.start_year);
-        formdata.append('institution', this.state.institution);
-        formdata.append('type', this.state.type);
-        formdata.append('id', localStorage.getItem('id'));
-        console.log(formdata)
-        await fetch('http://localhost:8000/create_experience/', {
-            method: 'POST',
-            body: formdata,
-            headers: {
-                'X-CSRFToken': csrftoken,
-            }
-        }).then(response => response.json())
-            .then(data => console.log(data));
-    }
-
-    async add_link() {
-        var csrftoken = this.getCookie('csrftoken');
-        let formdata = new FormData();
-        formdata.append('title', this.state.title);
-        formdata.append('url', this.state.url);
-        formdata.append('id', localStorage.getItem('id'));
-        console.log(formdata)
-        await fetch('http://localhost:8000/create_link/', {
-            method: 'POST',
-            body: formdata,
-            headers: {
-                'X-CSRFToken': csrftoken,
-            }
-        }).then(response => response.json())
-            .then(data => console.log(data));
+        this.setState({ created: true });
     }
 
     onchange_text(e) {
@@ -138,37 +83,60 @@ class Home extends React.Component {
 
     render() {
         return (
-            <div>
-                Home
+            <div style={{ backgroundColor: "black", }} >
+                {this.state.created ? <div style={{ paddingTop: '10%', marginLeft: "25%", width: "50%", height: "500px", textAlign: "center" }}>
+                    <button onClick={() => this.togglePopup('experience')} className='button-27'>
+                        Add Experience
+                    </button>
+                    <button onClick={() => this.togglePopup('education')} className='button-27'>
+                        Add Education
+                    </button>
+                    <button onClick={() => this.togglePopup('link')} className='button-27'>
+                        Add Link
+                    </button>
+                </div> : <div class="form">
+                    <div class="title">Create</div>
+                    <div class="subtitle">Add a new Candidate</div>
+                    <div class="input-container ic1">
+                        <input onChange={this.onchange_text} id="firstname" name="first_name" class="input" type="text" placeholder=" " />
+                        <div class="cut"></div>
+                        <label for="firstname" class="placeholder">First Name</label>
+                    </div>
+                    <div class="input-container ic2">
+                        <input onChange={this.onchange_text} id="lastname" name="last_name" class="input" type="text" placeholder=" " />
+                        <div class="cut"></div>
+                        <label for="lastname" class="placeholder">Last Name</label>
+                    </div>
+                    <div class="input-container ic2">
+                        <input onChange={this.onchange_text} id="email" name="email" class="input" type="email" placeholder=" " />
+                        <div class="cut"></div>
+                        <label for="email" class="placeholder">Email</label>
+                    </div>
+                    <div class="input-container ic2">
+                        <input onChange={this.onchange_text} name="contact" id="contact" class="input" placeholder=" " type='number' />
+                        <div class="cut cut-short"></div>
+                        <label for="contact" class="placeholder">Contact No.</label>
+                    </div>
+                    <div class="input-container ic2">
+                        <input onChange={this.onchange_file} name="pic" id="pic" class="input_2" type="file" placeholder=" " />
+                        <div class="cut"></div>
+                        <label for="pic" class="placeholder">Pic</label>
+                    </div>
+                    <div class="input-container ic2">
+                        <input onChange={this.onchange_file} name="resume" id="resume" class="input_2" type="file" placeholder=" " />
+                        <div class="cut"></div>
+                        <label for="resume" class="placeholder">Resume</label>
+                    </div>
+                    <button onClick={this.add_candidate} type="text" class="submit">Create</button>
+                </div>}
                 <div>
-                    <input onChange={this.onchange_text} type="text" name='first_name' placeholder='First Name' />
-                    <input onChange={this.onchange_text} type="text" name='last_name' placeholder='Last Name' />
-                    <input onChange={this.onchange_text} type="email" name='email' placeholder='Email' />
-                    <input onChange={this.onchange_text} type="number" name='contact' placeholder='Contact No.' />
-                    <input onChange={this.onchange_file} type="file" name='resume' placeholder='Resume' />
-                    <input onChange={this.onchange_file} type="file" name='pic' placeholder='Profile Image' />
-                    <button onClick={this.add_candidate}>Add</button>
-                </div>
-                <div>
-                    <input onChange={this.onchange_text} type="text" name='role' placeholder='Role' />
-                    <input onChange={this.onchange_text} type="number" name='start_year' placeholder='Start Year' />
-                    <input onChange={this.onchange_text} type="number" name='end_year' placeholder='End Year' />
-                    <input onChange={this.onchange_text} type="text" name='institution' placeholder='Institution' />
-                    <input onChange={this.onchange_text} type="text" name='type' placeholder='Type' />
-                    <button onClick={this.add_experience}>Add Experience</button>
-                </div>
-                <div>
-                    <input onChange={this.onchange_text} type="text" name='title' placeholder='Title' />
-                    <input onChange={this.onchange_text} type="number" name='start_year' placeholder='Start Year' />
-                    <input onChange={this.onchange_text} type="number" name='end_year' placeholder='End Year' />
-                    <input onChange={this.onchange_text} type="text" name='institution' placeholder='Institution' />
-                    <input onChange={this.onchange_text} type="text" name='grade' placeholder='Grade' />
-                    <button onClick={this.add_education}>Add Education</button>
-                </div>
-                <div>
-                    <input onChange={this.onchange_text} type="text" name='title' placeholder='Title' />
-                    <input onChange={this.onchange_text} type="text" name='url' placeholder='URL' />
-                    <button onClick={this.add_link}>Add Link</button>
+                    {this.state.showPopup ?
+                        <Popup
+                            type={this.state.popup_type}
+                            closePopup={this.togglePopup}
+                        />
+                        : null
+                    }
                 </div>
             </div>
         )

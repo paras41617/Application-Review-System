@@ -1,8 +1,5 @@
 import React from 'react';
-import Sidebar from './Sidebar';
 import '../styles/Candidate.css'
-import { Link } from 'react-router-dom';
-
 
 class Candidate extends React.Component {
     constructor(props) {
@@ -14,6 +11,7 @@ class Candidate extends React.Component {
             links: [],
             choice: '',
             showPopup: false,
+            candidate: null,
         }
         this.get_all = this.get_all.bind(this);
         this.getCookie = this.getCookie.bind(this);
@@ -21,6 +19,7 @@ class Candidate extends React.Component {
         this.onchange_text = this.onchange_text.bind(this);
         this.change_status = this.change_status.bind(this);
         this.togglePopup = this.togglePopup.bind(this);
+        this.download_resume = this.download_resume.bind(this)
     }
 
     componentDidMount() {
@@ -64,37 +63,36 @@ class Candidate extends React.Component {
     async show_detail(id) {
         var csrftoken = this.getCookie('csrftoken');
         let formdata = new FormData();
-        formdata.append('id', id);
-        await fetch('http://localhost:8000/show_detail/', {
+        formdata.append('id', this.state.candidates[id].id);
+        this.setState({ candidate: this.state.candidates[id] });
+        console.log(this.state.candidate)
+        let response = await fetch('http://localhost:8000/show_detail/', {
             method: 'POST',
             body: formdata,
             headers: {
                 'X-CSRFToken': csrftoken,
             }
-        }).then(response => response.json())
-            .then(data => {
-                console.log(data['experiences'])
-                console.log(data['educations'])
-                console.log(data['links'])
-                this.setState({
-                    educations: data['educations'], experiences: data['experiences'], links: data['links']
-                })
+        });
+        await response.json().then(data => {
+            console.log(data)
+            this.setState({
+                educations: data['educations'], experiences: data['experiences'], links: data['links']
             });
+        });
+        this.togglePopup()
     }
 
-    togglePopup(i) {
+    togglePopup() {
         this.setState({
-          showPopup: !this.state.showPopup
+            showPopup: !this.state.showPopup,
         });
-        this.show_detail(i);
-      };
+    };
 
-    async change_status(id) {
-        console.log(id)
+    async change_status(ans) {
         var csrftoken = this.getCookie('csrftoken');
         let formdata = new FormData();
-        formdata.append('id', id);
-        formdata.append('status', this.state.choice);
+        formdata.append('id', this.state.candidate.id);
+        formdata.append('status', ans);
         console.log(this.state.choice)
         await fetch('http://localhost:8000/change_status/', {
             method: 'POST',
@@ -106,16 +104,102 @@ class Candidate extends React.Component {
             .then(data => console.log(data));
     }
 
+    download_resume() {
+        const link = document.createElement('a');
+        link.href = `http://localhost:8000/media/${this.state.candidate.resume}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     render() {
         return (
             <div>
-                {this.state.showPopup?<div>
-
-                </div>:<div className='grid_container_2_explore'>
+                {this.state.showPopup ? <div>
+                    <div>
+                        <div>
+                            {this.state.candidate.pic}
+                            <img src={`http://localhost:8000/media/${this.state.candidate.pic}`} />
+                        </div>
+                        <div>
+                            <ul>
+                                <li>
+                                    {this.state.candidate.first_name}
+                                </li>
+                                <li>
+                                    {this.state.candidate.last_name}
+                                </li>
+                                <li>
+                                    {this.state.candidate.email}
+                                </li>
+                                <li>
+                                    {this.state.candidate.contact}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            Experiences
+                        </div>
+                        <div>
+                            {this.state.experiences.map((experience) => (
+                                <div key={experience.id}>
+                                    <ul>
+                                        <li>{experience.role}</li>
+                                        <li>{experience.start_year}</li>
+                                        <li>{experience.end_year}</li>
+                                        <li>{experience.institution}</li>
+                                        <li>{experience.type}</li>
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            Education
+                        </div>
+                        <div>
+                            {this.state.educations.map((education) => (
+                                <div key={education.id}>
+                                    <ul>
+                                        <li>{education.title}</li>
+                                        <li>{education.start_year}</li>
+                                        <li>{education.end_year}</li>
+                                        <li>{education.institution}</li>
+                                        <li>{education.grade}</li>
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            Links
+                        </div>
+                        <div>
+                            {this.state.experiences.map((link) => (
+                                <div key={link.id}>
+                                    <ul>
+                                        <li>{link.title}</li>
+                                        <li>{link.url}</li>
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <button onClick={this.togglePopup} className='button-27'>Close</button>
+                        <a href={`http://localhost:8000/media/${this.state.candidate.resume}`} target='_blank' rel='noopener noreferrer'><button className='button-27'>Resume</button></a>
+                        {this.state.candidate.status == "applied" || this.state.candidate.status == "accept" ? <button onClick={() => this.change_status('reject')} className='button-27'>Reject</button> : null}
+                        {this.state.candidate.status == "applied" || this.state.candidate.status == "reject" ? <button onClick={() => this.change_status('accept')} className='button-27'>Accept</button> : null}
+                    </div>
+                </div> : <div className='grid_container_2_explore'>
                     {
                         this.state.candidates.map((candidate, i) => (
                             <div key={i} className="card_2_explore">
-                                <button style={{height:"100%"}} onClick={() => this.togglePopup(candidate.id)} id="close">
+                                <button style={{ height: "100%" }} onClick={() => this.show_detail(i)} id="close">
                                     <img className='image_2_explore' src={`http://localhost:8000/media/${candidate.pic}`} placeholder='random_picture' />
                                     <div className="container_2_explore">
                                         <h4><b>{candidate.first_name}</b></h4>
