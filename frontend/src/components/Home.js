@@ -41,7 +41,6 @@ class Home extends React.Component {
         formdata.append('resume', this.state.resume);
         formdata.append('pic', this.state.pic);
         formdata.append('contact', this.state.contact);
-        console.log(formdata)
         await fetch('http://localhost:8000/create_candidate/', {
             method: 'POST',
             body: formdata,
@@ -50,7 +49,6 @@ class Home extends React.Component {
             }
         }).then(response => response.json())
             .then(data => {
-                console.log(data['id'])
                 this.setState({ id: data['id'] })
                 localStorage.setItem('id', data['id'])
             });
@@ -84,7 +82,7 @@ class Home extends React.Component {
     render() {
         return (
             <div style={{ backgroundColor: "black", }} >
-                {this.state.created ? <div style={{ paddingTop: '10%', marginLeft: "25%", width: "50%", height: "500px", textAlign: "center" }}>
+                {this.state.created ? <div style={{ paddingTop: '10%', marginLeft: "25%", width: "50%", height: "400px", textAlign: "center" }}>
                     <button onClick={() => this.togglePopup('experience')} className='button-27'>
                         Add Experience
                     </button>

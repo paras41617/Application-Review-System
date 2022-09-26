@@ -32,7 +32,6 @@ class Popup extends React.Component {
         formdata.append('institution', this.state.institution);
         formdata.append('grade', this.state.grade);
         formdata.append('id', localStorage.getItem('id'));
-        console.log(formdata)
         await fetch('http://localhost:8000/create_education/', {
             method: 'POST',
             body: formdata,
@@ -52,7 +51,6 @@ class Popup extends React.Component {
         formdata.append('institution', this.state.institution);
         formdata.append('type', this.state.type);
         formdata.append('id', localStorage.getItem('id'));
-        console.log(formdata)
         await fetch('http://localhost:8000/create_experience/', {
             method: 'POST',
             body: formdata,
@@ -69,7 +67,6 @@ class Popup extends React.Component {
         formdata.append('title', this.state.title);
         formdata.append('url', this.state.url);
         formdata.append('id', localStorage.getItem('id'));
-        console.log(formdata)
         await fetch('http://localhost:8000/create_link/', {
             method: 'POST',
             body: formdata,

@@ -176,11 +176,11 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    width: 50%;
+    width: 30%;
     will-change: transform;
     top: 80%;
     margin-top: 2%;
-    /* margin-left: 25%; */
+    margin-left: 1%;
   }
   
   .button-27:disabled {

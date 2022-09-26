@@ -55,7 +55,6 @@ class Candidate extends React.Component {
             }
         }).then(response => response.json())
             .then(data => {
-                console.log(data['all_candidates'])
                 this.setState({ candidates: data['all_candidates'] })
             });
     }
@@ -65,7 +64,6 @@ class Candidate extends React.Component {
         let formdata = new FormData();
         formdata.append('id', this.state.candidates[id].id);
         this.setState({ candidate: this.state.candidates[id] });
-        console.log(this.state.candidate)
         let response = await fetch('http://localhost:8000/show_detail/', {
             method: 'POST',
             body: formdata,
@@ -74,7 +72,6 @@ class Candidate extends React.Component {
             }
         });
         await response.json().then(data => {
-            console.log(data)
             this.setState({
                 educations: data['educations'], experiences: data['experiences'], links: data['links']
             });
@@ -93,7 +90,6 @@ class Candidate extends React.Component {
         let formdata = new FormData();
         formdata.append('id', this.state.candidate.id);
         formdata.append('status', ans);
-        console.log(this.state.choice)
         await fetch('http://localhost:8000/change_status/', {
             method: 'POST',
             body: formdata,
@@ -116,80 +112,90 @@ class Candidate extends React.Component {
         return (
             <div>
                 {this.state.showPopup ? <div>
-                    <div>
+                    <div id='detail_first_section'>
                         <div>
-                            {this.state.candidate.pic}
-                            <img src={`http://localhost:8000/media/${this.state.candidate.pic}`} />
+                            <img className='detail_pic' src={`http://localhost:8000/media/${this.state.candidate.pic}`} />
                         </div>
-                        <div>
-                            <ul>
-                                <li>
-                                    {this.state.candidate.first_name}
-                                </li>
-                                <li>
-                                    {this.state.candidate.last_name}
-                                </li>
-                                <li>
-                                    {this.state.candidate.email}
-                                </li>
-                                <li>
-                                    {this.state.candidate.contact}
-                                </li>
-                            </ul>
+                        <div id='detail_candidate'>
+                            <h1>
+                                {this.state.candidate.first_name}
+                            </h1>
+                            <p>&nbsp;</p>
+                            <h5>
+                                {this.state.candidate.last_name}
+                            </h5>
+                            <h5>
+                                {this.state.candidate.email}
+                            </h5>
+                            <h5>
+                                {this.state.candidate.contact}
+                            </h5>
+                            <h5>
+                                {this.state.candidate.status}
+                            </h5>
                         </div>
                     </div>
-                    <div>
+                    <div id='detail_second_section'>
                         <div>
-                            Experiences
+                            <h1>
+                                Experiences
+                            </h1>
                         </div>
                         <div>
-                            {this.state.experiences.map((experience) => (
-                                <div key={experience.id}>
-                                    <ul>
-                                        <li>{experience.role}</li>
-                                        <li>{experience.start_year}</li>
-                                        <li>{experience.end_year}</li>
-                                        <li>{experience.institution}</li>
-                                        <li>{experience.type}</li>
-                                    </ul>
-                                </div>
+                            {this.state.experiences.map((experience, i) => (
+                                <ul style={{ marginTop: "2%" }} key={experience.id}>
+                                    <li style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>{i + 1}. : </h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Role : {experience.role}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Start Year : {experience.start_year}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Last Year : {experience.end_year}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Institution : {experience.institution}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}> Type : {experience.type}</h5>
+                                    </li>
+                                </ul>
                             ))}
                         </div>
                     </div>
-                    <div>
+                    <div id='detail_third_section'>
                         <div>
-                            Education
+                            <h1>
+                                Educations
+                            </h1>
                         </div>
                         <div>
-                            {this.state.educations.map((education) => (
-                                <div key={education.id}>
-                                    <ul>
-                                        <li>{education.title}</li>
-                                        <li>{education.start_year}</li>
-                                        <li>{education.end_year}</li>
-                                        <li>{education.institution}</li>
-                                        <li>{education.grade}</li>
-                                    </ul>
-                                </div>
+                            {this.state.educations.map((education, i) => (
+                                <ul style={{ marginTop: "2%" }} key={education.id}>
+                                    <li style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>{i + 1}. : </h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Title : {education.title}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Start Year : {education.start_year}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Last Year : {education.end_year}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Institution : {education.institution}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}> Grade : {education.grade}</h5>
+                                    </li>
+                                </ul>
                             ))}
                         </div>
                     </div>
-                    <div>
+                    <div id='detail_fourth_section'>
                         <div>
-                            Links
+                            <h1>
+                                Links
+                            </h1>
                         </div>
                         <div>
-                            {this.state.experiences.map((link) => (
-                                <div key={link.id}>
-                                    <ul>
-                                        <li>{link.title}</li>
-                                        <li>{link.url}</li>
-                                    </ul>
-                                </div>
+                            {this.state.links.map((link, i) => (
+                                <ul style={{ marginTop: "2%" }} key={link.id}>
+                                    <li style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>{i + 1}. : </h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>Title : {link.title}</h5>
+                                        <h5 style={{ marginLeft: "2%", marginRight: "2%" }}>URL : {link.url}</h5>
+                                    </li>
+                                </ul>
                             ))}
                         </div>
                     </div>
-                    <div>
+                    <div style={{marginLeft:"7%" , marginBottom:"2%"}}>
                         <button onClick={this.togglePopup} className='button-27'>Close</button>
                         <a href={`http://localhost:8000/media/${this.state.candidate.resume}`} target='_blank' rel='noopener noreferrer'><button className='button-27'>Resume</button></a>
                         {this.state.candidate.status == "applied" || this.state.candidate.status == "accept" ? <button onClick={() => this.change_status('reject')} className='button-27'>Reject</button> : null}
