@@ -3,8 +3,7 @@ from urllib import response
 from django.shortcuts import render
 from .models import Candidate , Experience , Education , Link
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import viewsets
-from rest_framework.decorators import api_view  ,permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
 
