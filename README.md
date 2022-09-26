@@ -14,7 +14,7 @@ This is an application review system that can be used by any firm for managing c
 
 ## Tech Stack
 
-**Client:** React, HTLM, CSS
+**Client:** React.js, HTLM, CSS
 
 **Server:** Python , Django
 
